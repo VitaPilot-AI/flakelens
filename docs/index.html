@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>flakelens — is that LLM failure real, or just flaky?</title>
+<meta name="description" content="Repeat-run your LLM evals and separate genuinely broken prompts from nondeterministic flakes, with Wilson confidence intervals. MIT, zero dependencies.">
+<style>
+:root{--bg:#fbfbfa;--fg:#1a1a18;--mut:#5f5f58;--line:#e2e1dc;--acc:#1f6f5c;--card:#fff;--code:#f4f3ef}
+@media (prefers-color-scheme:dark){:root{--bg:#131311;--fg:#eceae4;--mut:#9d9c94;--line:#2c2b27;--acc:#6ec2a8;--card:#1a1a17;--code:#1e1e1a}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.65 ui-sans-serif,-apple-system,"Segoe UI",Inter,sans-serif}
+.wrap{max-width:720px;margin:0 auto;padding:clamp(2rem,6vw,4.5rem) 1.25rem 4rem}
+h1{font-size:clamp(2rem,6vw,2.9rem);line-height:1.1;letter-spacing:-.025em;margin:0 0 .5rem}
+h2{font-size:1.25rem;letter-spacing:-.01em;margin:2.75rem 0 .75rem}
+.lede{font-size:1.15rem;color:var(--mut);margin:0 0 2rem}
+p{margin:0 0 1rem}
+code,pre{font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+code{background:var(--code);padding:.13em .38em;border-radius:4px;font-size:.88em}
+pre{background:var(--code);border:1px solid var(--line);border-radius:10px;padding:1rem;overflow-x:auto;font-size:.82rem;line-height:1.5}
+pre code{background:none;padding:0}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:1.35rem 1.5rem;margin:1.25rem 0}
+.btn{display:inline-block;background:var(--acc);color:#fff;text-decoration:none;font-weight:600;padding:.7rem 1.25rem;border-radius:8px;margin:.35rem .4rem .35rem 0}
+.btn.alt{background:transparent;color:var(--acc);border:1px solid var(--acc)}
+@media (prefers-color-scheme:dark){.btn{color:#0e1512}}
+table{border-collapse:collapse;width:100%;font-size:.86rem;margin:.5rem 0}
+th,td{text-align:left;padding:.45rem .6rem;border-bottom:1px solid var(--line)}
+th{color:var(--mut);font-weight:600}
+ul{padding-left:1.15rem} li{margin:.3rem 0}
+.foot{margin-top:3.5rem;padding-top:1.25rem;border-top:1px solid var(--line);color:var(--mut);font-size:.87rem}
+a{color:var(--acc)}
+.scroll{overflow-x:auto}
+</style></head><body><div class="wrap">
+
+<h1>Is that LLM failure real, or did you just get unlucky?</h1>
+<p class="lede">Your eval says 8&nbsp;/&nbsp;10 passed. That single number cannot tell you whether the prompt is broken or merely nondeterministic — and those need opposite fixes.</p>
+
+<a class="btn" href="https://github.com/VitaPilot-AI/flakelens">Get it on GitHub — MIT</a>
+<a class="btn alt" href="#audit">Have us do it — $150</a>
+
+<h2>The problem</h2>
+<p>Run an eval once and a failure is ambiguous. It might be a prompt that fails <em>every</em> time — a logic bug. Or one that works 85% of the time and happened to fail the once you looked — temperature, prompt sensitivity, retrieval nondeterminism.</p>
+<p>Most tools run each case once. <strong>flakelens</strong> runs it N times and splits the two apart.</p>
+
+<div class="scroll"><table>
+<tr><th>case</th><th>pass rate</th><th>95% CI</th><th>verdict</th></tr>
+<tr><td><code>refund_json</code></td><td>0/10</td><td>[0%, 28%]</td><td>broken — fix the prompt</td></tr>
+<tr><td><code>cite_source</code></td><td>7/10</td><td>[40%, 89%]</td><td>flaky — lower temperature</td></tr>
+<tr><td><code>refuses_pii</code></td><td>10/10</td><td>[72%, 100%]</td><td>stable, but see below</td></tr>
+</table></div>
+
+<h2>Why the interval matters</h2>
+<p>If a case passes 10/10, the tempting read is “100% reliable.” It isn’t. The usual normal-approximation interval agrees with that misreading — it collapses to zero width at 0/n and n/n, precisely where you’re asking the question.</p>
+<p>flakelens uses the <strong>Wilson score interval</strong>, which doesn’t collapse. At 10/10 it reports a true pass rate of <strong>≥ 72%</strong>. To honestly claim 95%+ you need <strong>73</strong> consecutive passes. The tool says so rather than letting you ship on ten green checkmarks.</p>
+
+<h2>Use it</h2>
+<pre><code>git clone https://github.com/VitaPilot-AI/flakelens
+python3 -m flakelens.cli cases.json --provider mymod:call --runs 10</code></pre>
+<p>Zero dependencies, Python 3.10+, 24 tests. Exits non-zero on broken cases so it drops straight into CI; <code>--fail-on-flaky</code> gates on flakiness too.</p>
+
+<h2>What it deliberately isn’t</h2>
+<ul>
+<li><strong>Not a semantic judge.</strong> Checks are deterministic — format, refusal, injection, hallucination markers. An LLM-as-judge is itself flaky, which is the thing being measured.</li>
+<li><strong>Not a benchmark.</strong> Bring your own cases; 25 from real traffic beat 500 synthetic.</li>
+<li><strong>Costs N× tokens.</strong> Ten runs means ten calls. Start with your 20 most important cases.</li>
+</ul>
+
+<h2 id="audit">Done-for-you audit — $150</h2>
+<div class="card">
+<p>If you'd rather not write the cases: we take one LLM feature, build 25 cases from your real inputs, run the audit, and hand back the harness plus a findings note — each reproducible failure named, each flaky one with its interval.</p>
+<ul>
+<li><strong>$150 fixed</strong>, 3 business days from inputs</li>
+<li>Acceptance: runs on your machine with one command, and names ≥3 reproducible failure modes — or certifies none at your chosen n</li>
+<li>1 revision within 7 days</li>
+<li><strong>Nothing owed until it meets that bar</strong></li>
+</ul>
+<p style="margin-bottom:0"><a class="btn" href="mailto:dev@vitapilotai.com?subject=flakelens%20audit">Email dev@vitapilotai.com</a>
+<a class="btn alt" href="https://buy.stripe.com/3cIcN5dbJdxPbK7dgQfbq01">Pay after acceptance</a></p>
+</div>
+
+<div class="foot">Built by <a href="https://vitapilotai.com">VitaPilot AI LLC</a> · MIT licensed · <a href="https://github.com/VitaPilot-AI/flakelens">source</a></div>
+</div></body></html>
