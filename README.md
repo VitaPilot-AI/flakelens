@@ -1,5 +1,7 @@
 # flakelens
 
+[![tests](https://github.com/VitaPilot-AI/flakelens/actions/workflows/ci.yml/badge.svg)](https://github.com/VitaPilot-AI/flakelens/actions/workflows/ci.yml) [![license](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE) [![python](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://python.org)
+
 **Your LLM eval says 8/10 passed. Is that a bug, or did you get unlucky?**
 
 Most eval tools run each case once and give you a number. But LLM outputs are
