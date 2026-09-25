@@ -75,8 +75,8 @@ a{color:var(--acc)}
 <p>flakelens uses the <strong>Wilson score interval</strong>, which doesn’t collapse. At 10/10 it reports a true pass rate of <strong>≥ 72%</strong>. To honestly claim 95%+ you need <strong>73</strong> consecutive passes. The tool says so rather than letting you ship on ten green checkmarks.</p>
 
 <h2>Use it</h2>
-<pre><code>git clone https://github.com/VitaPilot-AI/flakelens
-python3 -m flakelens.cli cases.json --provider mymod:call --runs 10</code></pre>
+<pre><code>pip install flakelens
+flakelens cases.json --provider mymod:call --runs 10</code></pre>
 <p>Zero dependencies, Python 3.10+, 24 tests. Exits non-zero on broken cases so it drops straight into CI; <code>--fail-on-flaky</code> gates on flakiness too.</p>
 
 <h2>What it deliberately isn’t</h2>

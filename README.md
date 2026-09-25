@@ -1,6 +1,6 @@
 # flakelens
 
-[![tests](https://github.com/VitaPilot-AI/flakelens/actions/workflows/ci.yml/badge.svg)](https://github.com/VitaPilot-AI/flakelens/actions/workflows/ci.yml) [![license](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE) [![python](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://python.org)
+[![tests](https://github.com/VitaPilot-AI/flakelens/actions/workflows/ci.yml/badge.svg)](https://github.com/VitaPilot-AI/flakelens/actions/workflows/ci.yml) [![license](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE) [![python](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://python.org) [![PyPI](https://img.shields.io/pypi/v/flakelens.svg)](https://pypi.org/project/flakelens/)
 
 **Your LLM eval says 8/10 passed. Is that a bug, or did you get unlucky?**
 
@@ -42,7 +42,13 @@ ten green checkmarks.
 
 ## Install
 
+```bash
+pip install flakelens
+```
+
 No dependencies beyond the standard library. Python 3.10+.
+
+From source, if you'd rather:
 
 ```bash
 git clone https://github.com/VitaPilot-AI/flakelens && cd flakelens
@@ -79,7 +85,7 @@ Write cases:
 Run:
 
 ```bash
-python3 -m flakelens.cli cases.json --provider myprovider:call --runs 10
+flakelens cases.json --provider myprovider:call --runs 10
 ```
 
 Exits non-zero when a case is broken, so it drops into CI. Add
