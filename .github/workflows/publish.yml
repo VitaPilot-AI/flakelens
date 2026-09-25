@@ -20,9 +20,7 @@ jobs:
       - run: pip install build
       - run: rm -rf dist && python -m build
       - name: show what will be uploaded
-        run: ls -l dist/ && python -c "
-import pathlib
-for f in sorted(pathlib.Path('dist').iterdir()): print('UPLOADING:', f.name)"
+        run: ls -l dist/
       - uses: pypa/gh-action-pypi-publish@release/v1
         with:
           skip-existing: true
