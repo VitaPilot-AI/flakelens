@@ -1,20 +1,37 @@
 [project]
 name = "flakelens"
-version = "0.1.0"
+version = "0.1.1"
 description = "Separate real LLM failures from flaky ones, with confidence intervals."
 readme = "README.md"
 requires-python = ">=3.10"
 license = "MIT"
 license-files = ["LICENSE"]
 authors = [{name = "VitaPilot AI LLC", email = "dev@vitapilotai.com"}]
-keywords = ["llm","evaluation","testing","flaky","nondeterminism","ci"]
+keywords = ["llm","evaluation","testing","flaky","flakiness","nondeterminism",
+            "ci","llmops","prompt","regression","confidence-interval","wilson"]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Intended Audience :: Developers",
+  "Topic :: Software Development :: Testing",
+  "Topic :: Software Development :: Quality Assurance",
+  "Topic :: Scientific/Engineering :: Artificial Intelligence",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Operating System :: OS Independent",
+  "Typing :: Typed",
+]
 dependencies = []
 
 [project.scripts]
 flakelens = "flakelens.cli:main"
 
 [project.urls]
-Homepage = "https://github.com/VitaPilot-AI/flakelens"
+Homepage = "https://vitapilotai.com/flakelens/"
+Source = "https://github.com/VitaPilot-AI/flakelens"
+Issues = "https://github.com/VitaPilot-AI/flakelens/issues"
 
 [build-system]
 requires = ["setuptools>=77"]
