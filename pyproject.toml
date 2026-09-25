@@ -4,7 +4,8 @@ version = "0.1.0"
 description = "Separate real LLM failures from flaky ones, with confidence intervals."
 readme = "README.md"
 requires-python = ">=3.10"
-license = {text = "MIT"}
+license = "MIT"
+license-files = ["LICENSE"]
 authors = [{name = "VitaPilot AI LLC", email = "dev@vitapilotai.com"}]
 keywords = ["llm","evaluation","testing","flaky","nondeterminism","ci"]
 dependencies = []
@@ -16,5 +17,5 @@ flakelens = "flakelens.cli:main"
 Homepage = "https://github.com/VitaPilot-AI/flakelens"
 
 [build-system]
-requires = ["setuptools>=68"]
+requires = ["setuptools>=77"]
 build-backend = "setuptools.build_meta"
