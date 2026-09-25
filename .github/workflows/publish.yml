@@ -4,25 +4,25 @@ on:
     types: [published]
   workflow_dispatch:
 
+# Build and publish in ONE job. A two-job hand-off via upload/download-artifact
+# silently shipped a stale dist once; there is no reason to pay that risk for a
+# build that takes five seconds.
 jobs:
-  build:
+  publish:
     runs-on: ubuntu-latest
+    environment: pypi
+    permissions:
+      id-token: write          # OIDC — replaces the API token
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with: {python-version: "3.12"}
       - run: pip install build
-      - run: python -m build
-      - uses: actions/upload-artifact@v4
-        with: {name: dist, path: dist/}
-
-  publish:
-    needs: build
-    runs-on: ubuntu-latest
-    environment: pypi
-    permissions:
-      id-token: write          # OIDC — this is what replaces the API token
-    steps:
-      - uses: actions/download-artifact@v4
-        with: {name: dist, path: dist/}
+      - run: rm -rf dist && python -m build
+      - name: show what will be uploaded
+        run: ls -l dist/ && python -c "
+import pathlib
+for f in sorted(pathlib.Path('dist').iterdir()): print('UPLOADING:', f.name)"
       - uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          skip-existing: true
